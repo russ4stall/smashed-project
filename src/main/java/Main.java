@@ -6,13 +6,19 @@ import com.google.gson.reflect.TypeToken;
 import user.User;
 import user.UserDao;
 import utils.DbiFactory;
-
+import org.flywaydb.core.Flyway;
+import static utils.AppConfig.*;
 
 /**
  * Created by russellf on 2/22/2016.
  */
 public class Main {
     public static void main(String[] args) {
+		Flyway flyway = new Flyway();
+        flyway.setValidateOnMigrate(false);
+        flyway.setDataSource(DB_URL, DB_USER, DB_PASSWORD);
+        flyway.migrate();
+	
         get("/users", (req, res) -> {
 			List<User> users = new ArrayList<User>();
 			
