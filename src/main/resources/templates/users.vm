@@ -1,0 +1,18 @@
+<HTML>
+<BODY>
+	Hello $name!
+	<table>
+	#foreach( $user in $users )	   
+		  <tr>
+			<td>$user.id</td>
+			<td>$user.name</td>
+			<td>$user.username</td>
+			<td>$user.email</td>			
+			<td>$user.phone</td>			
+			<td>$user.website</td>			
+		  </tr>	   
+	#end
+	#
+	</table>
+</BODY>
+</HTML>
