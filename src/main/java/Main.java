@@ -24,7 +24,8 @@ public class Main {
 	
     public static void main(String[] args) {
 		////SETUP
-		//final Logger logger = LoggerFactory.getLogger(Main.class);		
+		//final Logger logger = LoggerFactory.getLogger(Main.class);
+		staticFileLocation("/public"); // Static files
 		Flyway flyway = new Flyway();
         flyway.setValidateOnMigrate(false);
         flyway.setDataSource(DB_URL, DB_USER, DB_PASSWORD);
