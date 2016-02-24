@@ -21,7 +21,11 @@ public class DbiFactory {
         );
     }
 
-    public DBI getDbi() {
-        return dbi;
+    public static DBI getDbi() {        
+		return new DBI(
+                DB_URL,
+                DB_USER,
+                DB_PASSWORD
+        );
     }
 }
