@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.flywaydb.core.Flyway;
 import user.UsersViewModel;
 import utils.VelocityTemplateEngine;
+import websockets.SimpleSocket;
 
 import static utils.DbiFactory.*;
 import static utils.AppConfig.*;
@@ -30,7 +31,10 @@ public class Main {
         flyway.setValidateOnMigrate(false);
         flyway.setDataSource(DB_URL, DB_USER, DB_PASSWORD);
         flyway.migrate();
-	
+
+		////WEBSOCKETS
+        webSocket("/simple", SimpleSocket.class);
+
 		////ROUTES
         get("/users-json", (req, res) -> {
 			//logger.info("route /users was requested.");

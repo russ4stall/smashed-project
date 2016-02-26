@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Socket Test!!!</title>
+    <script src="https://code.jquery.com/jquery-2.2.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/simplegrid.css" />
+
+</head>
+<body>
+    <h1>SOCKETS!!!!</h1>
+<div class="grid">
+    <div class="col-3-8" id="messages">
+
+    </div>
+    <div class="col-5-8 box">
+        <textarea id="messageBox" rows="10" cols="50">send messages from here...</textarea>
+        <button id="sendBtn" type="button">SEND</button>
+    </div>
+</div>
+
+<script>
+    $( function () {
+        // Create a socket instance
+        var socket = new WebSocket('ws://localhost:4567/simple');
+
+        // Open the socket
+        socket.onopen = function(event) {
+
+            // Send an initial message
+            socket.send('I am the client and I\'m listening!');
+
+            // Listen for messages
+            socket.onmessage = function (event) {
+                console.log('Client received a message', event);
+                $("#messages").append(event.data + '<br/>');
+            };
+
+            // Listen for socket closes
+            socket.onclose = function (event) {
+                console.log('Client notified socket has closed', event);
+            };
+        }
+
+        $("#sendBtn").click(function () {
+            var message = $("#messageBox").val();
+            console.log(message);
+            socket.send(message);
+        });
+
+            // To close the socket....
+            //socket.close()
+    });
+</script>
+
+</body>
+</html>
