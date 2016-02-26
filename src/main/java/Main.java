@@ -1,20 +1,22 @@
 import static spark.Spark.*;
-import spark.ModelAndView;
+
+import com.russ4stall.spark.TemplateModelMapImpl;
+import com.russ4stall.spark.ViewModelTransformer;
+import com.russ4stall.spark.ViewModelTransformerFactory;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import freemarker.template.Configuration;
+import spark.template.freemarker.FreeMarkerEngine;
+import spark.template.velocity.VelocityTemplateEngine;
 import user.User;
 import user.UserDao;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.flywaydb.core.Flyway;
 import user.UsersViewModel;
-import utils.VelocityTemplateEngine;
 import websockets.SimpleSocket;
-
 import static utils.DbiFactory.*;
 import static utils.AppConfig.*;
 
@@ -23,7 +25,7 @@ import static utils.AppConfig.*;
  */
 public class Main {
 	
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 		////SETUP
 		//final Logger logger = LoggerFactory.getLogger(Main.class);
 		staticFileLocation("/public"); // Static files
@@ -31,6 +33,23 @@ public class Main {
         flyway.setValidateOnMigrate(false);
         flyway.setDataSource(DB_URL, DB_USER, DB_PASSWORD);
         flyway.migrate();
+
+		ViewModelTransformer velocityTransformer = new ViewModelTransformer(
+				new VelocityTemplateEngine(),
+				"templates/",
+				".vm",
+				new TemplateModelMapImpl()
+		);
+
+		Configuration freemarkerConfig = new Configuration();
+		freemarkerConfig.setClassForTemplateLoading(Classpath.class, "templates/");
+
+		ViewModelTransformer freemarkerTransformer = new ViewModelTransformer(
+				new FreeMarkerEngine(freemarkerConfig),
+				"",
+				".ftl",
+				new TemplateModelMapImpl()
+		);
 
 		////WEBSOCKETS
         webSocket("/simple", SimpleSocket.class);
@@ -67,9 +86,15 @@ public class Main {
 
 			UsersViewModel model = new UsersViewModel(users, "russ");
 
-			return new ModelAndView(model, "templates/users.vm");
+			return model;
+		}, velocityTransformer);
 
-		}, new VelocityTemplateEngine());
+		get("/russell", (req, res) -> {
+
+			RussellViewModel viewModel = new RussellViewModel("Russell Forstall", 26, "Russ", "Ashlyn Forstall");
+
+			return viewModel;
+		}, freemarkerTransformer);
 
 		get("/users/:id", (req, res) -> {
 			User user = null;

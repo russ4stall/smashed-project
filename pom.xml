@@ -20,6 +20,11 @@
 			<version>2.3</version>
 		</dependency>
         <dependency>
+            <groupId>com.sparkjava</groupId>
+            <artifactId>spark-template-freemarker</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
             <groupId>com.russ4stall.spark</groupId>
             <artifactId>view-model-convention</artifactId>
             <version>1.0</version>
